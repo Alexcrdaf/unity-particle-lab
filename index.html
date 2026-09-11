@@ -682,42 +682,203 @@ input[type="range"]::-webkit-slider-thumb {
     justify-content: space-between;
   }
 }
-  </style>
+  .unity-dark-toolbar {
+  background: #191919;
+  border-bottom: 1px solid #333333;
+  padding: 6px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.unity-toolbar-row {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.unity-left-group, .unity-right-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.unity-project-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.unity-cube-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  background: #282828;
+  border: 1px solid #444;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.unity-title-hierarchy {
+  display: flex;
+  flex-direction: column;
+}
+
+.unity-project-name {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #e5e5e5;
+  line-height: 1.2;
+}
+
+.unity-build-version {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #888888;
+}
+
+.editor-tab-strip {
+  display: flex;
+  gap: 2px;
+  margin-left: 12px;
+  border-left: 1px solid #333;
+  padding-left: 14px;
+}
+
+.editor-tab {
+  padding: 6px 12px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #888888;
+  background: #202020;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border: 1px solid #333;
+  border-bottom: none;
+  cursor: pointer;
+}
+
+.editor-tab.active {
+  background: #2a2a2a;
+  color: #ffffff;
+  border-color: #444;
+}
+
+.unity-pro-boosty-btn {
+  background: #2c2c2c;
+  border: 1px solid #e65100;
+  color: #ff9800;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.unity-pro-boosty-btn:hover {
+  background: #e65100;
+  color: #ffffff;
+}
+
+.editor-segmented-toggle {
+  display: flex;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.editor-seg-btn {
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.editor-seg-btn.active {
+  background: #3b3b3b;
+  color: #fff;
+}
+
+.btn-preset {
+  border-radius: 4px !important;
+  background: #222222 !important;
+  border: 1px solid #3a3a3a !important;
+  font-size: 0.76rem !important;
+}
+
+.btn-preset.active {
+  background: #e65100 !important;
+  border-color: #ff9800 !important;
+  color: #fff !important;
+}
+
+.btn-export-unity {
+  border-radius: 4px !important;
+  background: #2d4f30 !important;
+  border: 1px solid #4caf50 !important;
+  color: #a5d6a7 !important;
+  box-shadow: none !important;
+}
+
+.btn-export-unity:hover {
+  background: #388e3c !important;
+  color: #fff !important;
+}
+</style>
 </head>
 <body>
 
-  <header class="lab-header">
-    <div class="header-container">
-      <a href="#" class="brand-box">
-        <div class="brand-icon-frame">
-          <img src="icon.png" width="40" height="40" alt="Unity ParticleLab">
-        </div>
-        <div class="brand-title-col">
-          <h1>Unity ParticleLab</h1>
-          <span>Alexcdraft Studios</span>
-        </div>
-      </a>
+    <header class="unity-dark-toolbar">
+    <div class="unity-toolbar-row">
+      <div class="unity-left-group">
+        <a href="#" class="unity-project-brand">
+          <div class="unity-cube-icon">
+            <img src="icon.png" width="36" height="36" alt="Unity ParticleLab">
+          </div>
+          <div class="unity-title-hierarchy">
+            <span class="unity-project-name">Unity ParticleLab</span>
+            <span class="unity-build-version">v2026.3 LTS // Shuriken VFX</span>
+          </div>
+        </a>
 
-      <div class="header-right">
-        <button onclick="openBoostySupport()" class="btn-boosty-lab">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-          <span data-i18n="support_btn">Поддержать Boosty</span>
+        <div class="editor-tab-strip">
+          <span class="editor-tab active">Scene (3D)</span>
+          <span class="editor-tab">Game View</span>
+          <span class="editor-tab">Particle Inspector</span>
+        </div>
+      </div>
+
+      <div class="unity-right-group">
+        <button onclick="openBoostySupport()" class="unity-pro-boosty-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <span data-i18n="support_btn">Support Boosty</span>
         </button>
 
-        <div class="pill-group">
-          <button class="pill-btn active" id="btn-theme-dark">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-            <span data-i18n="theme_dark">Тёмная</span>
-          </button>
-          <button class="pill-btn" id="btn-theme-light">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-            <span data-i18n="theme_light">Светлая</span>
-          </button>
+        <div class="editor-segmented-toggle">
+          <button class="editor-seg-btn active" id="btn-theme-dark">Dark</button>
+          <button class="editor-seg-btn" id="btn-theme-light">Light</button>
         </div>
 
-        <div class="pill-group">
-          <button class="pill-btn active" id="btn-lang-ru">RU</button>
-          <button class="pill-btn" id="btn-lang-en">EN</button>
+        <div class="editor-segmented-toggle">
+          <button class="editor-seg-btn active" id="btn-lang-ru">RU</button>
+          <button class="editor-seg-btn" id="btn-lang-en">EN</button>
         </div>
       </div>
     </div>
@@ -726,7 +887,7 @@ input[type="range"]::-webkit-slider-thumb {
   <div class="ad-banner-strip">
     <div class="ad-box">
       <span class="ad-tag" data-i18n="ad_tag">СПОНСОРСКАЯ РЕКЛАМА</span>
-      <iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy" style="border:0;width:100%;height:90px;display:block;"></iframe>
+      <iframe data-aa="2455016" src="//acceptable.a-ads.com/2455016/?size=Adaptive" loading="lazy" style="border:0;width:100%;height:90px;display:block;"></iframe>
     </div>
   </div>
 
@@ -811,7 +972,7 @@ input[type="range"]::-webkit-slider-thumb {
   <div class="ad-banner-strip">
     <div class="ad-box">
       <span class="ad-tag" data-i18n="ad_tag">СПОНСОРСКАЯ РЕКЛАМА</span>
-      <iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy" style="border:0;width:100%;height:90px;display:block;"></iframe>
+      <iframe data-aa="2455016" src="//acceptable.a-ads.com/2455016/?size=Adaptive" loading="lazy" style="border:0;width:100%;height:90px;display:block;"></iframe>
     </div>
   </div>
 
@@ -836,14 +997,14 @@ input[type="range"]::-webkit-slider-thumb {
 
   <div class="support-banner-overlay" id="support-waterfall-overlay">
     <div class="waterfall-col-left">
-      <div class="waterfall-ad-card"><iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy"></iframe></div>
-      <div class="waterfall-ad-card"><iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy"></iframe></div>
-      <div class="waterfall-ad-card"><iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy"></iframe></div>
+      <div class="waterfall-ad-card"><iframe data-aa="2455016" src="//acceptable.a-ads.com/2455016/?size=Adaptive" loading="lazy"></iframe></div>
+      <div class="waterfall-ad-card"><iframe data-aa="2455016" src="//acceptable.a-ads.com/2455016/?size=Adaptive" loading="lazy"></iframe></div>
+      <div class="waterfall-ad-card"><iframe data-aa="2455016" src="//acceptable.a-ads.com/2455016/?size=Adaptive" loading="lazy"></iframe></div>
     </div>
     <div class="waterfall-col-right">
-      <div class="waterfall-ad-card"><iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy"></iframe></div>
-      <div class="waterfall-ad-card"><iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy"></iframe></div>
-      <div class="waterfall-ad-card"><iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy"></iframe></div>
+      <div class="waterfall-ad-card"><iframe data-aa="2455016" src="//acceptable.a-ads.com/2455016/?size=Adaptive" loading="lazy"></iframe></div>
+      <div class="waterfall-ad-card"><iframe data-aa="2455016" src="//acceptable.a-ads.com/2455016/?size=Adaptive" loading="lazy"></iframe></div>
+      <div class="waterfall-ad-card"><iframe data-aa="2455016" src="//acceptable.a-ads.com/2455016/?size=Adaptive" loading="lazy"></iframe></div>
     </div>
     <div class="support-modal-center">
       <button class="btn-waterfall-close" onclick="closeBoostySupport()" aria-label="Закрыть">&times;</button>
