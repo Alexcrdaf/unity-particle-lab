@@ -645,6 +645,45 @@ button:active { transform: scale(0.95) !important; }
 .smooth-pop { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 @keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
+
+/* PRO-MAX WING ADS */
+.wing-ad-column {
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: fixed;
+  top: 50px;
+  z-index: 9999;
+}
+.wing-ad-column-left { left: 20px; }
+.wing-ad-column-right { right: 20px; }
+.wing-ad-container {
+  width: 260px;
+  height: 250px;
+  background: rgba(18, 20, 28, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.5);
+  backdrop-filter: blur(12px);
+  transition: transform 0.3s ease;
+  pointer-events: auto;
+}
+.wing-ad-container:hover {
+  transform: translateY(-5px);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+.wing-ad-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  overflow: hidden;
+}
+@media (max-width: 1400px) {
+  .wing-ad-column { display: none !important; }
+}
+
 </style>
 <script type="application/ld+json">
 {
@@ -667,6 +706,24 @@ button:active { transform: scale(0.95) !important; }
 </script>
 </head>
 <body>
+
+<div class="wing-ad-column wing-ad-column-left">
+  <div class="wing-ad-container smooth-pop" style="animation-delay: 0.1s">
+    <iframe data-aa="2455020" src="//acceptable.a-ads.com/2455020/?size=Adaptive&background_color=12141c&text_color=ffffff&title_color=3b82f6&title_hover_color=10b981&link_color=3b82f6&link_hover_color=10b981"></iframe>
+  </div>
+  <div class="wing-ad-container smooth-pop" style="animation-delay: 0.2s">
+    <iframe data-aa="2455020" src="//acceptable.a-ads.com/2455020/?size=Adaptive&background_color=12141c&text_color=ffffff&title_color=3b82f6&title_hover_color=10b981&link_color=3b82f6&link_hover_color=10b981"></iframe>
+  </div>
+</div>
+<div class="wing-ad-column wing-ad-column-right">
+  <div class="wing-ad-container smooth-pop" style="animation-delay: 0.3s">
+    <iframe data-aa="2455020" src="//acceptable.a-ads.com/2455020/?size=Adaptive&background_color=12141c&text_color=ffffff&title_color=3b82f6&title_hover_color=10b981&link_color=3b82f6&link_hover_color=10b981"></iframe>
+  </div>
+  <div class="wing-ad-container smooth-pop" style="animation-delay: 0.4s">
+    <iframe data-aa="2455020" src="//acceptable.a-ads.com/2455020/?size=Adaptive&background_color=12141c&text_color=ffffff&title_color=3b82f6&title_hover_color=10b981&link_color=3b82f6&link_hover_color=10b981"></iframe>
+  </div>
+</div>
+
 
   <header class="unity-dark-toolbar">
     <div class="unity-toolbar-row">
