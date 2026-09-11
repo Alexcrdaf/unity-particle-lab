@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unity ParticleLab — 3D/2D Генератор партиклов и VFX для игр | Alexcdraft Studios</title>
+  <meta name="description" content="Интерактивный онлайн симулятор систем частиц (VFX) для Unity, Unreal Engine и Godot. Настройка огня, магии, взрывов, искр, превью в Three.js и экспорт параметров Shuriken Particle System. Alexcdraft Studios.">
+  <meta name="keywords" content="unity particle system online, vfx генератор онлайн, симулятор частиц, unity shuriken, particle emitter, 3d vfx maker, партиклы юнити, godot particles, alexcdraft studios">
+  <meta name="author" content="Alexcdraft Studios">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Unity ParticleLab — 3D/2D Генератор партиклов и VFX для игр">
+  <meta property="og:description" content="Интерактивный GPU генератор визуальных эффектов с физикой частиц, цветом, скоростью и экспортом пресетов.">
+  <meta property="og:image" content="icon.png">
+
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Unity ParticleLab",
+    "description": "Interactive GPU 3D Particle VFX sandbox and Shuriken preset generator for Unity developers.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "All",
+    "author": {
+      "@type": "Organization",
+      "name": "Alexcdraft Studios"
+    }
+  }
+  </script>
+
+  <style>
+:root, [data-theme="dark"] {
+  --bg-base: #0b0f19;
+  --bg-surface: #111827;
+  --bg-card: rgba(17, 24, 39, 0.78);
+  --bg-card-solid: #161f33;
+  --bg-control: #1f293d;
+  --border: rgba(249, 115, 22, 0.25);
+  --border-glow: #f97316;
+  --text-main: #f8fafc;
+  --text-dim: #cbd5e1;
+  --text-muted: #64748b;
+  --accent-orange: #f97316;
+  --accent-cyan: #06b6d4;
+  --accent-glow: rgba(249, 115, 22, 0.35);
+  --card-radius: 14px;
+  --panel-blur: blur(14px);
+}
+
+[data-theme="light"] {
+  --bg-base: #fff7ed;
+  --bg-surface: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --bg-card-solid: #ffffff;
+  --bg-control: #fed7aa;
+  --border: rgba(234, 88, 12, 0.2);
+  --border-glow: #ea580c;
+  --text-main: #431407;
+  --text-dim: #7c2d12;
+  --text-muted: #9a3412;
+  --accent-orange: #ea580c;
+  --accent-cyan: #0284c7;
+  --accent-glow: rgba(234, 88, 12, 0.2);
+  --card-radius: 14px;
+  --panel-blur: blur(14px);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg-base);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.lab-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--bg-card);
+  backdrop-filter: var(--panel-blur);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 24px;
+}
+
+.header-container {
+  max-width: 1560px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-icon-frame {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 14px var(--accent-glow);
+  flex-shrink: 0;
+}
+
+.brand-icon-frame img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  display: block;
+}
+
+.brand-title-col h1 {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+  line-height: 1.1;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-title-col span {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  font-weight: 700;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-boosty-lab {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.4);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-boosty-lab:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.6);
+}
+
+.pill-group {
+  display: flex;
+  background: var(--bg-control);
+  padding: 3px;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  gap: 2px;
+}
+
+.pill-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.pill-btn.active {
+  background: var(--bg-card-solid);
+  color: var(--text-main);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.ad-banner-strip {
+  max-width: 1560px;
+  margin: 10px auto 0 auto;
+  padding: 0 24px;
+  width: 100%;
+}
+
+.ad-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 94px;
+  overflow: hidden;
+}
+
+.ad-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.workspace-layout {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 16px 24px 30px 24px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+}
+
+.controls-panel {
+  background: var(--bg-card);
+  backdrop-filter: var(--panel-blur);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.panel-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-title-row h2 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.badge-vfx {
+  background: var(--accent-orange);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.presets-strip-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.presets-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.btn-preset {
+  background: var(--bg-control);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  border-radius: 9px;
+  padding: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-preset:hover {
+  color: var(--text-main);
+  border-color: var(--accent-orange);
+}
+
+.btn-preset.active {
+  background: var(--accent-orange);
+  color: #fff;
+  border-color: var(--accent-orange);
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+
+.field-val-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--accent-cyan);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-control);
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.color-pickers-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.color-box {
+  background: var(--bg-control);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.color-box span {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.color-box input[type="color"] {
+  background: none;
+  border: none;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.btn-export-unity {
+  background: linear-gradient(135deg, var(--accent-orange), #ea580c);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 18px var(--accent-glow);
+  transition: all 0.2s ease;
+  margin-top: 6px;
+}
+
+.btn-export-unity:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px var(--accent-glow);
+}
+
+.viewport-container {
+  background: #050811;
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  position: relative;
+  min-height: 550px;
+  overflow: hidden;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
+}
+
+#three-canvas-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.viewport-overlay-ui {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+}
+
+.badge-active-particles {
+  background: rgba(17, 24, 39, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--accent-cyan);
+}
+
+.btn-cam-reset {
+  background: rgba(17, 24, 39, 0.85);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.seo-guide-section {
+  max-width: 1560px;
+  margin: 10px auto 40px auto;
+  padding: 0 24px;
+  width: 100%;
+}
+
+.seo-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.seo-card {
+  background: var(--bg-card);
+  backdrop-filter: var(--panel-blur);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.seo-card h2, .seo-card h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.seo-card p {
+  font-size: 0.84rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+.support-banner-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+  display: none;
+}
+
+.support-banner-overlay.active {
+  display: block;
+}
+
+.waterfall-col-left, .waterfall-col-right {
+  position: absolute;
+  top: -800px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 360px;
+  pointer-events: auto;
+  animation: scrollDown 20s linear infinite;
+  z-index: 100000;
+}
+
+.waterfall-col-left {
+  left: 30px;
+}
+
+.waterfall-col-right {
+  right: 30px;
+  animation-delay: -10s;
+}
+
+@keyframes scrollDown {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(1400px); }
+}
+
+.waterfall-ad-card {
+  background: var(--bg-card-solid);
+  border: 1px solid rgba(249, 115, 22, 0.5);
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.85);
+  width: 320px;
+  min-height: 120px;
+}
+
+.waterfall-ad-card iframe {
+  width: 100% !important;
+  height: 100px !important;
+  border: 0;
+  display: block;
+}
+
+.support-modal-center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100001;
+  background: var(--bg-card-solid);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  max-width: 480px;
+  width: calc(100% - 40px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.support-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.support-modal-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  display: block;
+}
+
+.support-modal-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.support-modal-sub {
+  font-size: 0.76rem;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.support-modal-text {
+  font-size: 0.84rem;
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+.btn-waterfall-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: var(--bg-control);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+
+.btn-waterfall-close:hover {
+  background: #ef4444;
+  color: #fff;
+  border-color: #ef4444;
+  transform: scale(1.08);
+}
+
+.footer-bar {
+  border-top: 1px solid var(--border);
+  background: var(--bg-card);
+  padding: 16px 24px;
+  margin-top: auto;
+}
+
+.footer-inner {
+  max-width: 1560px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.footer-signature strong {
+  color: var(--text-main);
+}
+
+@media (max-width: 1200px) {
+  .waterfall-col-left, .waterfall-col-right {
+    display: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .workspace-layout {
+    grid-template-columns: 1fr;
+  }
+  .seo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+  </style>
+</head>
+<body>
+
+  <header class="lab-header">
+    <div class="header-container">
+      <a href="#" class="brand-box">
+        <div class="brand-icon-frame">
+          <img src="icon.png" width="40" height="40" alt="Unity ParticleLab">
+        </div>
+        <div class="brand-title-col">
+          <h1>Unity ParticleLab</h1>
+          <span>Alexcdraft Studios</span>
+        </div>
+      </a>
+
+      <div class="header-right">
+        <button onclick="openBoostySupport()" class="btn-boosty-lab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <span data-i18n="support_btn">Поддержать Boosty</span>
+        </button>
+
+        <div class="pill-group">
+          <button class="pill-btn active" id="btn-theme-dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <span data-i18n="theme_dark">Тёмная</span>
+          </button>
+          <button class="pill-btn" id="btn-theme-light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+            <span data-i18n="theme_light">Светлая</span>
+          </button>
+        </div>
+
+        <div class="pill-group">
+          <button class="pill-btn active" id="btn-lang-ru">RU</button>
+          <button class="pill-btn" id="btn-lang-en">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="ad-banner-strip">
+    <div class="ad-box">
+      <span class="ad-tag" data-i18n="ad_tag">СПОНСОРСКАЯ РЕКЛАМА</span>
+      <iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy" style="border:0;width:100%;height:90px;display:block;"></iframe>
+    </div>
+  </div>
+
+  <main class="workspace-layout">
+    
+    <aside class="controls-panel">
+      <div class="panel-title-row">
+        <h2 data-i18n="panel_title">Параметры Shuriken VFX</h2>
+        <span class="badge-vfx">GPU 3D</span>
+      </div>
+
+      <div class="presets-strip-box">
+        <span style="font-size:0.75rem;font-weight:700;color:var(--text-dim);" data-i18n="presets_title">Готовые VFX пресеты:</span>
+        <div class="presets-grid">
+          <button class="btn-preset active" data-preset="fire">🔥 <span data-i18n="p_fire">Пламя</span></button>
+          <button class="btn-preset" data-preset="magic">✨ <span data-i18n="p_magic">Магия</span></button>
+          <button class="btn-preset" data-preset="explosion">💥 <span data-i18n="p_explosion">Взрыв</span></button>
+          <button class="btn-preset" data-preset="snow">❄️ <span data-i18n="p_snow">Снегопад</span></button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label-row">
+          <span data-i18n="param_count">Количество частиц (Rate over Time)</span>
+          <span class="field-val-badge" id="val-count">600</span>
+        </div>
+        <input type="range" id="input-count" min="50" max="3000" step="50" value="600">
+      </div>
+
+      <div class="field-group">
+        <div class="field-label-row">
+          <span data-i18n="param_speed">Начальная скорость (Start Speed)</span>
+          <span class="field-val-badge" id="val-speed">2.5</span>
+        </div>
+        <input type="range" id="input-speed" min="0.2" max="10.0" step="0.2" value="2.5">
+      </div>
+
+      <div class="field-group">
+        <div class="field-label-row">
+          <span data-i18n="param_size">Размер частицы (Start Size)</span>
+          <span class="field-val-badge" id="val-size">0.3</span>
+        </div>
+        <input type="range" id="input-size" min="0.05" max="1.5" step="0.05" value="0.3">
+      </div>
+
+      <div class="field-group">
+        <div class="field-label-row">
+          <span data-i18n="param_gravity">Гравитация (Gravity Modifier)</span>
+          <span class="field-val-badge" id="val-gravity">-0.5</span>
+        </div>
+        <input type="range" id="input-gravity" min="-2.0" max="2.0" step="0.1" value="-0.5">
+      </div>
+
+      <div class="color-pickers-row">
+        <div class="color-box">
+          <span data-i18n="param_color1">Цвет старта</span>
+          <input type="color" id="input-color-start" value="#f97316">
+        </div>
+        <div class="color-box">
+          <span data-i18n="param_color2">Цвет затухания</span>
+          <input type="color" id="input-color-end" value="#ef4444">
+        </div>
+      </div>
+
+      <button class="btn-export-unity" id="btn-export-preset">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        <span data-i18n="btn_export_unity">Экспорт пресета Unity (.JSON)</span>
+      </button>
+    </aside>
+
+    <section class="viewport-container">
+      <div class="viewport-overlay-ui">
+        <div class="badge-active-particles"><span id="live-particle-counter">600</span> PARTICLE PARTICLES</div>
+        <button class="btn-cam-reset" id="btn-reset-cam" data-i18n="btn_reset_cam">Сброс угла</button>
+      </div>
+
+      <div id="three-canvas-container"></div>
+    </section>
+
+  </main>
+
+  <div class="ad-banner-strip">
+    <div class="ad-box">
+      <span class="ad-tag" data-i18n="ad_tag">СПОНСОРСКАЯ РЕКЛАМА</span>
+      <iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy" style="border:0;width:100%;height:90px;display:block;"></iframe>
+    </div>
+  </div>
+
+  <section class="seo-guide-section">
+    <div class="seo-grid">
+      <article class="seo-card">
+        <h2><span data-i18n="seo_title">Система визуальных эффектов (VFX) для Unity</span></h2>
+        <p data-i18n="seo_text">
+          Unity ParticleLab позволяет в реальном времени подбирать физику и оптические характеристики частиц в браузере с 3D-предпросмотром на WebGL. Экспортируйте готовые конфиги для интеграции в Unity Shuriken Particle System или Godot GPUParticles.
+        </p>
+      </article>
+
+      <article class="seo-card">
+        <h3><span data-i18n="author_title">Alexcdraft Studios</span></h3>
+        <p data-i18n="author_desc">Создаем инструменты для разработчиков игр, модификации в Steam и инди-проекты. Поддержите развитие студии на Boosty!</p>
+        <button onclick="openBoostySupport()" class="btn-boosty-lab" style="align-self:flex-start;margin-top:auto;">
+          <span data-i18n="support_btn">Поддержать на Boosty</span>
+        </button>
+      </article>
+    </div>
+  </section>
+
+  <div class="support-banner-overlay" id="support-waterfall-overlay">
+    <div class="waterfall-col-left">
+      <div class="waterfall-ad-card"><iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy"></iframe></div>
+      <div class="waterfall-ad-card"><iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy"></iframe></div>
+      <div class="waterfall-ad-card"><iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy"></iframe></div>
+    </div>
+    <div class="waterfall-col-right">
+      <div class="waterfall-ad-card"><iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy"></iframe></div>
+      <div class="waterfall-ad-card"><iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy"></iframe></div>
+      <div class="waterfall-ad-card"><iframe data-aa="2454996" src="//acceptable.a-ads.com/2454996/?size=Adaptive" loading="lazy"></iframe></div>
+    </div>
+    <div class="support-modal-center">
+      <button class="btn-waterfall-close" onclick="closeBoostySupport()" aria-label="Закрыть">&times;</button>
+      <div class="support-modal-header">
+        <img src="icon.png" class="support-modal-icon" width="48" height="48" alt="Alexcdraft Studios">
+        <div>
+          <h3 class="support-modal-title">Alexcdraft Studios</h3>
+          <span class="support-modal-sub">Steam моды • Игры • Сайты</span>
+        </div>
+      </div>
+      <p class="support-modal-text">Привет! Я создаю инди-игры, моды для мастерской Steam и полезные браузерные инструменты для геймдева. Поддержите разработки на Boosty!</p>
+      <a href="https://boosty.to/vostguy/donate" target="_blank" rel="noopener noreferrer" class="btn-boosty-lab">Поддержать на Boosty</a>
+    </div>
+  </div>
+
+  <footer class="footer-bar">
+    <div class="footer-inner">
+      <span>Unity ParticleLab • 3D симулятор партиклов и VFX</span>
+      <div class="footer-signature"><span>Создано</span> <strong>Alexcdraft Studios</strong></div>
+    </div>
+  </footer>
+
+  <script>
+(function() {
+  const i18n = {
+    ru: {
+      support_btn: "Поддержать Boosty",
+      theme_dark: "Тёмная",
+      theme_light: "Светлая",
+      ad_tag: "СПОНСОРСКАЯ РЕКЛАМА",
+      panel_title: "Параметры Shuriken VFX",
+      presets_title: "Готовые VFX пресеты:",
+      p_fire: "Пламя",
+      p_magic: "Магия",
+      p_explosion: "Взрыв",
+      p_snow: "Снегопад",
+      param_count: "Количество частиц (Rate)",
+      param_speed: "Начальная скорость (Speed)",
+      param_size: "Размер частицы (Size)",
+      param_gravity: "Гравитация (Gravity)",
+      param_color1: "Цвет старта",
+      param_color2: "Цвет затухания",
+      btn_export_unity: "Экспорт пресета Unity (.JSON)",
+      btn_reset_cam: "Сброс угла",
+      seo_title: "Система визуальных эффектов (VFX) для Unity",
+      seo_text: "Unity ParticleLab позволяет в реальном времени подбирать физику и оптические характеристики частиц в браузере с 3D-предпросмотром на WebGL. Экспортируйте готовые конфиги для интеграции в Unity Shuriken Particle System или Godot GPUParticles.",
+      author_title: "Alexcdraft Studios",
+      author_desc: "Создаем инструменты для разработчиков игр, модификации в Steam и инди-проекты. Поддержите развитие студии на Boosty!"
+    },
+    en: {
+      support_btn: "Support Boosty",
+      theme_dark: "Dark",
+      theme_light: "Light",
+      ad_tag: "SPONSORED ADVERTISEMENT",
+      panel_title: "Shuriken VFX Properties",
+      presets_title: "Curated VFX Presets:",
+      p_fire: "Fire",
+      p_magic: "Magic",
+      p_explosion: "Explosion",
+      p_snow: "Snowfall",
+      param_count: "Emission Rate (Count)",
+      param_speed: "Start Speed",
+      param_size: "Start Size",
+      param_gravity: "Gravity Modifier",
+      param_color1: "Start Color",
+      param_color2: "Fade Color",
+      btn_export_unity: "Export Unity Preset (.JSON)",
+      btn_reset_cam: "Reset Cam",
+      seo_title: "Interactive Unity VFX Particle System Studio",
+      seo_text: "Unity ParticleLab lets you design physics and color gradients for real-time particle effects in WebGL. Instant export for Unity Shuriken or Godot GPUParticles.",
+      author_title: "Alexcdraft Studios",
+      author_desc: "Crafting gamedev tools, Steam Workshop modifications, and indie games. Back our team on Boosty!"
+    }
+  };
+
+  let currentLang = 'ru';
+  let particleCount = 600;
+  let startSpeed = 2.5;
+  let startSize = 0.3;
+  let gravity = -0.5;
+  let startColor = '#f97316';
+  let endColor = '#ef4444';
+
+  let scene, camera, renderer, particleSystem, particleGeo, particleMat;
+  let positions = [], velocities = [], lifespans = [], maxLifespans = [];
+
+  function initThree() {
+    const container = document.getElementById('three-canvas-container');
+    scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x050811, 0.03);
+
+    camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(0, 1.5, 6);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+
+    createParticleSystem();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
+    let isMouseDown = false;
+    let prevMousePos = { x: 0, y: 0 };
+    container.addEventListener('mousedown', (e) => {
+      isMouseDown = true;
+      prevMousePos = { x: e.clientX, y: e.clientY };
+    });
+    window.addEventListener('mouseup', () => { isMouseDown = false; });
+    window.addEventListener('mousemove', (e) => {
+      if (!isMouseDown) return;
+      const deltaX = e.clientX - prevMousePos.x;
+      const deltaY = e.clientY - prevMousePos.y;
+      camera.position.x += deltaX * 0.01;
+      camera.position.y -= deltaY * 0.01;
+      camera.lookAt(0, 1, 0);
+      prevMousePos = { x: e.clientX, y: e.clientY };
+    });
+
+    animate();
+  }
+
+  function createParticleSystem() {
+    if (particleSystem) scene.remove(particleSystem);
+
+    particleGeo = new THREE.BufferGeometry();
+    positions = new Float32Array(particleCount * 3);
+    velocities = [];
+    lifespans = [];
+    maxLifespans = [];
+
+    const colors = new Float32Array(particleCount * 3);
+    const colorA = new THREE.Color(startColor);
+
+    for (let i = 0; i < particleCount; i++) {
+      resetParticle(i, true);
+      colors[i * 3] = colorA.r;
+      colors[i * 3 + 1] = colorA.g;
+      colors[i * 3 + 2] = colorA.b;
+    }
+
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    particleMat = new THREE.PointsMaterial({
+      size: startSize,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+
+    particleSystem = new THREE.Points(particleGeo, particleMat);
+    scene.add(particleSystem);
+  }
+
+  function resetParticle(i, initMode = false) {
+    positions[i * 3] = (Math.random() - 0.5) * 0.4;
+    positions[i * 3 + 1] = 0;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 0.4;
+
+    const angle = Math.random() * Math.PI * 2;
+    const spread = 0.35;
+    velocities[i] = {
+      x: Math.cos(angle) * spread * startSpeed,
+      y: (0.8 + Math.random() * 0.8) * startSpeed,
+      z: Math.sin(angle) * spread * startSpeed
+    };
+
+    const life = 1.0 + Math.random() * 1.5;
+    maxLifespans[i] = life;
+    lifespans[i] = initMode ? Math.random() * life : 0;
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+
+    const delta = 0.016;
+    const posArr = particleGeo.attributes.position.array;
+    const colArr = particleGeo.attributes.color.array;
+    const cStart = new THREE.Color(startColor);
+    const cEnd = new THREE.Color(endColor);
+
+    for (let i = 0; i < particleCount; i++) {
+      lifespans[i] += delta;
+      if (lifespans[i] >= maxLifespans[i]) {
+        resetParticle(i);
+      }
+
+      velocities[i].y += gravity * delta * 2.0;
+
+      posArr[i * 3] += velocities[i].x * delta;
+      posArr[i * 3 + 1] += velocities[i].y * delta;
+      posArr[i * 3 + 2] += velocities[i].z * delta;
+
+      const progress = lifespans[i] / maxLifespans[i];
+      const curColor = cStart.clone().lerp(cEnd, progress);
+      colArr[i * 3] = curColor.r;
+      colArr[i * 3 + 1] = curColor.g;
+      colArr[i * 3 + 2] = curColor.b;
+    }
+
+    particleGeo.attributes.position.needsUpdate = true;
+    particleGeo.attributes.color.needsUpdate = true;
+    particleSystem.rotation.y += 0.003;
+
+    renderer.render(scene, camera);
+  }
+
+  function setPreset(name) {
+    document.querySelectorAll('.btn-preset').forEach(b => {
+      if (b.getAttribute('data-preset') === name) b.classList.add('active');
+      else b.classList.remove('active');
+    });
+
+    if (name === 'fire') {
+      particleCount = 600;
+      startSpeed = 2.5;
+      startSize = 0.35;
+      gravity = -0.5;
+      startColor = '#f97316';
+      endColor = '#ef4444';
+    } else if (name === 'magic') {
+      particleCount = 900;
+      startSpeed = 1.8;
+      startSize = 0.28;
+      gravity = 0.1;
+      startColor = '#06b6d4';
+      endColor = '#a855f7';
+    } else if (name === 'explosion') {
+      particleCount = 1500;
+      startSpeed = 6.5;
+      startSize = 0.45;
+      gravity = -2.0;
+      startColor = '#fbbf24';
+      endColor = '#b91c1c';
+    } else if (name === 'snow') {
+      particleCount = 800;
+      startSpeed = 0.8;
+      startSize = 0.22;
+      gravity = 0.6;
+      startColor = '#e2e8f0';
+      endColor = '#94a3b8';
+    }
+
+    document.getElementById('input-count').value = particleCount;
+    document.getElementById('val-count').textContent = particleCount;
+    document.getElementById('input-speed').value = startSpeed;
+    document.getElementById('val-speed').textContent = startSpeed;
+    document.getElementById('input-size').value = startSize;
+    document.getElementById('val-size').textContent = startSize;
+    document.getElementById('input-gravity').value = gravity;
+    document.getElementById('val-gravity').textContent = gravity;
+    document.getElementById('input-color-start').value = startColor;
+    document.getElementById('input-color-end').value = endColor;
+    document.getElementById('live-particle-counter').textContent = particleCount;
+
+    createParticleSystem();
+  }
+
+  function exportUnityJson() {
+    const config = {
+      generator: "Unity ParticleLab by Alexcdraft Studios",
+      systemName: "Shuriken_VFX_Preset",
+      mainModule: {
+        maxParticles: particleCount,
+        startSpeed: startSpeed,
+        startSize: startSize,
+        gravityModifier: -gravity,
+        simulationSpace: "Local"
+      },
+      emission: {
+        rateOverTime: particleCount
+      },
+      colorOverLifetime: {
+        startColorRGB: startColor,
+        endColorRGB: endColor
+      }
+    };
+
+    const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = "unity_particle_preset.json";
+    a.click();
+  }
+
+  function initUI() {
+    document.getElementById('input-count').addEventListener('input', (e) => {
+      particleCount = parseInt(e.target.value, 10);
+      document.getElementById('val-count').textContent = particleCount;
+      document.getElementById('live-particle-counter').textContent = particleCount;
+      createParticleSystem();
+    });
+
+    document.getElementById('input-speed').addEventListener('input', (e) => {
+      startSpeed = parseFloat(e.target.value);
+      document.getElementById('val-speed').textContent = startSpeed;
+    });
+
+    document.getElementById('input-size').addEventListener('input', (e) => {
+      startSize = parseFloat(e.target.value);
+      document.getElementById('val-size').textContent = startSize;
+      if (particleMat) particleMat.size = startSize;
+    });
+
+    document.getElementById('input-gravity').addEventListener('input', (e) => {
+      gravity = parseFloat(e.target.value);
+      document.getElementById('val-gravity').textContent = gravity;
+    });
+
+    document.getElementById('input-color-start').addEventListener('input', (e) => {
+      startColor = e.target.value;
+    });
+
+    document.getElementById('input-color-end').addEventListener('input', (e) => {
+      endColor = e.target.value;
+    });
+
+    document.querySelectorAll('.btn-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        setPreset(btn.getAttribute('data-preset'));
+      });
+    });
+
+    document.getElementById('btn-reset-cam').addEventListener('click', () => {
+      camera.position.set(0, 1.5, 6);
+      camera.lookAt(0, 1, 0);
+    });
+
+    document.getElementById('btn-export-preset').addEventListener('click', exportUnityJson);
+
+    document.getElementById('btn-theme-dark').addEventListener('click', () => {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.getElementById('btn-theme-dark').classList.add('active');
+      document.getElementById('btn-theme-light').classList.remove('active');
+    });
+
+    document.getElementById('btn-theme-light').addEventListener('click', () => {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('btn-theme-light').classList.add('active');
+      document.getElementById('btn-theme-dark').classList.remove('active');
+    });
+
+    document.getElementById('btn-lang-ru').addEventListener('click', () => {
+      document.getElementById('btn-lang-ru').classList.add('active');
+      document.getElementById('btn-lang-en').classList.remove('active');
+      currentLang = 'ru';
+      applyLang('ru');
+    });
+
+    document.getElementById('btn-lang-en').addEventListener('click', () => {
+      document.getElementById('btn-lang-en').classList.add('active');
+      document.getElementById('btn-lang-ru').classList.remove('active');
+      currentLang = 'en';
+      applyLang('en');
+    });
+
+    window.openBoostySupport = function() {
+      const overlay = document.getElementById('support-waterfall-overlay');
+      if (overlay) overlay.classList.add('active');
+    };
+
+    window.closeBoostySupport = function() {
+      const overlay = document.getElementById('support-waterfall-overlay');
+      if (overlay) overlay.classList.remove('active');
+    };
+  }
+
+  function applyLang(lang) {
+    const texts = i18n[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (texts[key]) el.textContent = texts[key];
+    });
+  }
+
+  function init() {
+    initThree();
+    initUI();
+  }
+
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+  </script>
+</body>
+</html>
